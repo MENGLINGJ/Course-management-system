@@ -1,0 +1,661 @@
+#include<stdio.h>
+#include<stdlib.h>/*动态内存相关*/
+#include<string.h>/*strcmp*/
+#define BUFLEN 100
+#define LEN 15 /* 课程编号和课程最大字符数 */
+#define N 100 /* 最大课程数*/
+#include <stdlib.h>/*颜色头文件*/
+static int in=0;/* 定义全局变量 */
+struct record
+{
+    int num; /* 课程编号 */
+    char name[LEN+1]; /* 课程名称 */
+    char pro[50];/*所属专业*/
+    char property[50];/*课程性质*/
+    int time; /* 学时 */
+    int score; /*学分 */
+} items[N];
+static int k=1,n,m; /* 定义静态全局变量    n代表总课程数 静态变量默认初始值为0*/
+void sort();/* 函数声明--排序课程 */
+void insert();//输入函数
+void display();//显示函数
+void seek();//查找函数
+void modify();//修改函数
+void del();//删除函数
+void menu();
+int main()/*主函数*/
+{
+    system("color 1f");
+    int i=3;
+    char mima[100]="111888";/*初始密码*/
+    char input[100];
+    while(i>0)
+    {
+        printf("请输入密码:");
+        gets(input);/*等待用户键入密码*/
+        if(strcmp(mima,input)==0)
+        {
+            system("color 8e");
+            printf("恭喜你，密码正确!\n");
+            while(k)/*总体循环*/
+                menu();
+            system("pause");/*按任意键继续*/
+            break;
+        }
+        else printf("对不起，密码输入错误!\n您还有%d次输入机会。\n",i-1);
+        i--;
+    }
+    return 0;
+}
+void help()
+{
+    system("cls");
+    printf("\n欢迎使用系统帮助！\n");
+    printf("\n按照菜单提示键入数字代号以获得您想得到的信息或进行操作;\n");
+    printf("\n谢谢您的使用！\n");
+    system("pause");/*按任意键继续*/
+    system("cls");
+}
+void sort()/*按要求排序课程*/
+{
+    system("cls");
+    int i,j,a;
+    int s1;
+    char s2[50];
+    if(n!=0)/*判断课程数量*/
+    {
+        while(1)
+        {
+            printf("请输入排序选项\n");
+            printf("1.按照课程编号排序\n");
+            printf("2.按照课程学时排序\n");
+            printf("3.按照课程学分排序\n");
+            printf("4.返回主菜单\n");
+            scanf("%d",&a);
+            switch(a)
+            {
+                case 1:
+                    for(i=0; i<n-1; i++)
+                    {
+                        for(j=n-1; j>i; j--)
+                            if(items[j-1].num>items[j].num)
+                            {
+                                s1=items[j-1].num;/*交换课程编号*/
+                                items[j-1].num=items[j].num;
+                                items[j].num=s1;
+                                strcpy(s2,items[j-1].name);/*交换课程名称*/
+                                strcpy(items[j-1].name,items[j].name);
+                                strcpy(items[j].name,s2);
+                                strcpy(s2,items[j-1].pro);/*交换所属专业*/
+                                strcpy(items[j-1].pro,items[j].pro);
+                                strcpy(items[j].pro,s2);
+                                strcpy(s2,items[j-1].property);/*交换课程性质*/
+                                strcpy(items[j-1].property,items[j].property);
+                                strcpy(items[j].property,s2);
+                                s1=items[j-1].time;/*交换课程学时*/
+                                items[j-1].time=items[j].time;
+                                items[j].time=s1;
+                                s1=items[j-1].score;/*交换课程学分*/
+                                items[j-1].score=items[j].score;
+                                items[j].score=s1;
+                            }
+                    }
+                    printf("课程编号      课程名称      所属专业      课程性质      课程学时     课程学分\n");
+                    printf("--------------------------------------------------------------------------------\n");
+                    for(i=0; i<n; i++)
+                    {
+                        printf("%-14d%-14s%-14s%-14s%-14d%-14d\n", items[i].num,items[i].name,items[i].pro,items[i].property,items[i].time,items[i].score);
+                    }
+                    printf("--------------------------------------------------------------------------------\n");
+                    break;
+                case 2:
+                    for(i=0; i<n-1; i++)
+                    {
+                        for(j=n-1; j>i; j--)
+                            if(items[j-1].time>items[j].time)
+                            {
+                                s1=items[j-1].num;/*交换课程编号*/
+                                items[j-1].num=items[j].num;
+                                items[j].num=s1;
+                                strcpy(s2,items[j-1].name);/*交换课程名称*/
+                                strcpy(items[j-1].name,items[j].name);
+                                strcpy(items[j].name,s2);
+                                strcpy(s2,items[j-1].pro);/*交换所属专业*/
+                                strcpy(items[j-1].pro,items[j].pro);
+                                strcpy(items[j].pro,s2);
+                                strcpy(s2,items[j-1].property);/*交换课程性质*/
+                                strcpy(items[j-1].property,items[j].property);
+                                strcpy(items[j].property,s2);
+                                s1=items[j-1].time;/*交换课程学时*/
+                                items[j-1].time=items[j].time;
+                                items[j].time=s1;
+                                s1=items[j-1].score;/*交换课程学分*/
+                                items[j-1].score=items[j].score;
+                                items[j].score=s1;
+                            }
+                    }
+                    printf("课程编号      课程名称      所属专业      课程性质      课程学时     课程学分\n");
+                    printf("--------------------------------------------------------------------------------\n");
+                    for(i=0; i<n; i++)
+                    {
+                        printf("%-14d%-14s%-14s%-14s%-14d%-14d\n", items[i].num,items[i].name,items[i].pro,items[i].property,items[i].time,items[i].score);
+                    }
+                    printf("--------------------------------------------------------------------------------\n");
+                    break;
+                case 3:
+                    for(i=0; i<n-1; i++)
+                    {
+                        for(j=n-1; j>i; j--)
+                            if(items[j-1].score>items[j].score)
+                            {
+                                s1=items[j-1].num;/*交换课程编号*/
+                                items[j-1].num=items[j].num;
+                                items[j].num=s1;
+                                strcpy(s2,items[j-1].name);/*交换课程名称*/
+                                strcpy(items[j-1].name,items[j].name);
+                                strcpy(items[j].name,s2);
+                                strcpy(s2,items[j-1].pro);/*交换所属专业*/
+                                strcpy(items[j-1].pro,items[j].pro);
+                                strcpy(items[j].pro,s2);
+                                strcpy(s2,items[j-1].property);/*交换课程性质*/
+                                strcpy(items[j-1].property,items[j].property);
+                                strcpy(items[j].property,s2);
+                                s1=items[j-1].time;/*交换课程学时*/
+                                items[j-1].time=items[j].time;
+                                items[j].time=s1;
+                                s1=items[j-1].score;/*交换课程学分*/
+                                items[j-1].score=items[j].score;
+                                items[j].score=s1;
+                            }
+                    }
+                    printf("课程编号      课程名称      所属专业      课程性质      课程学时     课程学分\n");
+                    printf("--------------------------------------------------------------------------------\n");
+                    for(i=0; i<n; i++)
+                    {
+                        printf("%-14d%-14s%-14s%-14s%-14d%-14d\n", items[i].num,items[i].name,items[i].pro,items[i].property,items[i].time,items[i].score);
+                    }
+                    printf("--------------------------------------------------------------------------------\n");
+                    break;
+                case 4:
+                    system("pause");/*按任意键继续*/
+                    system("cls");
+                    return;
+                default:
+                    printf("请在1-4之间选择\n");
+            }
+        }
+    }
+    else printf("请先添加课程\n");
+    system("pause");/*按任意键继续*/
+    system("cls");
+}
+void seek() /*查找课程*/
+{
+    system("cls");
+    int i,item,flag;
+    char s1[50];
+    int s2;/* 以课程姓名和编号最长长度+1为准 */
+    printf("----------------------\n");
+    printf("-----1.按编号查询-----\n");
+    printf("-----2.按名称查询-----\n");
+    printf("-----3.按专业查询-----\n");
+    printf("-----4.按性质查询-----\n");
+    printf("-----5.按学时查询-----\n");
+    printf("-----6.按学分查询-----\n");
+    printf("-----7.返回主菜单-----\n");
+    printf("----------------------\n");
+    while(1)
+    {
+        printf("请选择子菜单编号:");
+        scanf("%d",&item);
+        flag=0;/*判断条件*/
+        switch(item)
+        {
+            case 1:
+                printf("请输入要查询的课程的编号:\n");
+                scanf("%d",&s2);
+                for(i=0; i<n; i++)
+                    if(items[i].num==s2)/*匹配课程编号*///先判断是否有符合的课程目的是打印一次标题
+                    {
+                        flag=1;
+                    }
+                if(flag==1)
+                {
+                    printf("课程编号      课程名称      所属专业      课程性质      课程学时     课程学分\n");
+                    printf("--------------------------------------------------------------------------------\n");
+                    for(i=0; i<n; i++)
+                    {
+                        if(items[i].num==s2)/*匹配课程编号*/
+                        {
+                            printf("%-14d%-14s%-14s%-14s%-14d%-14d\n", items[i].num,items[i].name,items[i].pro,items[i].property,items[i].time,items[i].score);
+                        }
+                    }
+                    printf("--------------------------------------------------------------------------------\n");
+                }
+                else printf("该课程编号不存在！\n");
+                break;
+            case 2:
+                printf("请输入要查询的课程的名称:\n");
+                scanf("%s",&s1);
+                for(i=0; i<n; i++)
+                    if(strcmp(items[i].name,s1)==0)/*匹配课程名称*///先判断是否有符合的课程目的是打印一次标题
+                    {
+                        flag=1;
+                    }
+                if(flag==1)
+                {
+                    printf("课程编号      课程名称      所属专业      课程性质      课程学时     课程学分\n");
+                    printf("--------------------------------------------------------------------------------\n");
+                    for(i=0; i<n; i++)
+                    {
+                        if(strcmp(items[i].name,s1)==0)/*匹配课程名称*/
+                        {
+                            printf("%-14d%-14s%-14s%-14s%-14d%-14d\n", items[i].num,items[i].name,items[i].pro,items[i].property,items[i].time,items[i].score);
+                        }
+                    }
+                    printf("--------------------------------------------------------------------------------\n");
+                }
+                else printf("该课程名称不存在！\n");
+                break;
+            case 3:
+                printf("请输入要查询的课程的专业:\n");
+                scanf("%s",&s1);
+                for(i=0; i<n; i++)
+                    if(strcmp(items[i].pro,s1)==0)/*匹配课程专业*///先判断是否有符合的课程目的是打印一次标题
+                    {
+                        flag=1;
+                    }
+                if(flag==1)
+                {
+                    printf("课程编号      课程名称      所属专业      课程性质      课程学时     课程学分\n");
+                    printf("--------------------------------------------------------------------------------\n");
+                    for(i=0; i<n; i++)
+                    {
+                        if(strcmp(items[i].pro,s1)==0)/*匹配课程专业*/
+                        {
+                            printf("%-14d%-14s%-14s%-14s%-14d%-14d\n", items[i].num,items[i].name,items[i].pro,items[i].property,items[i].time,items[i].score);
+                        }
+                    }
+                    printf("--------------------------------------------------------------------------------\n");
+                }
+                else printf("该专业的课程不存在！\n");
+                break;
+            case 4:
+                printf("请输入要查询的课程的性质:\n");
+                scanf("%s",&s1);
+                for(i=0; i<n; i++)
+                    if(strcmp(items[i].property,s1)==0)/*匹配课程性质*///先判断是否有符合的课程目的是打印一次标题
+                    {
+                        flag=1;
+                    }
+                if(flag==1)
+                {
+                    printf("课程编号      课程名称      所属专业      课程性质      课程学时     课程学分\n");
+                    printf("--------------------------------------------------------------------------------\n");
+                    for(i=0; i<n; i++)
+                    {
+                        if(strcmp(items[i].property,s1)==0)/*匹配课程性质*/
+                        {
+                            printf("%-14d%-14s%-14s%-14s%-14d%-14d\n", items[i].num,items[i].name,items[i].pro,items[i].property,items[i].time,items[i].score);
+                        }
+                    }
+                    printf("--------------------------------------------------------------------------------\n");
+                }
+                else printf("该性质的课程不存在！\n");
+                break;
+            case 5:
+                printf("请输入要查询的课程的学时:\n");
+                scanf("%d",&s2);
+                for(i=0; i<n; i++)
+                    if(items[i].time==s2)/*匹配课程学时*///先判断是否有符合的课程目的是打印一次标题
+                    {
+                        flag=1;
+                    }
+                if(flag==1)
+                {
+                    printf("课程编号      课程名称      所属专业      课程性质      课程学时     课程学分\n");
+                    printf("--------------------------------------------------------------------------------\n");
+                    for(i=0; i<n; i++)
+                    {
+                        if(items[i].time==s2)/*匹配课程学时*/
+                        {
+                            printf("%-14d%-14s%-14s%-14s%-14d%-14d\n", items[i].num,items[i].name,items[i].pro,items[i].property,items[i].time,items[i].score);
+                        }
+                    }
+                    printf("--------------------------------------------------------------------------------\n");
+                }
+                else printf("该学时的课程不存在！\n");
+                break;
+            case 6:
+                printf("请输入要查询的课程的学分:\n");
+                scanf("%d",&s2);
+                for(i=0; i<n; i++)
+                    if(items[i].score==s2)/*匹配课程学分*///先判断是否有符合的课程目的是打印一次标题
+                    {
+                        flag=1;
+                    }
+                if(flag==1)
+                {
+                    printf("课程编号      课程名称      所属专业      课程性质      课程学时     课程学分\n");
+                    printf("--------------------------------------------------------------------------------\n");
+                    for(i=0; i<n; i++)
+                    {
+                        if(items[i].score==s2)/*匹配课程学分*/
+                        {
+                            printf("%-14d%-14s%-14s%-14s%-14d%-14d\n", items[i].num,items[i].name,items[i].pro,items[i].property,items[i].time,items[i].score);
+                        }
+                    }
+                    printf("--------------------------------------------------------------------------------\n");
+                }
+                else printf("该学分的课程不存在！\n");
+                break;
+            case 7:
+                system("pause");/*按任意键继续*/
+                system("cls");
+                return;
+            default:
+                printf("请在1-7之间选择\n");
+        }
+    }
+}
+void modify() /*修改课程*/
+{
+    system("cls");
+    int i,item,number,j,c=1;//C控制现更改编号造成的程序错误（只能更改一个课程）
+    char s2[100];
+    int s1,s3; /* 以课程名和编号最长长度+1为准 */
+    printf("请输入要要修改的课程的编号:\n");
+    scanf("%d",&s3);
+    if(n!=0)/*判断是否数据库中有课程*/
+    {
+        for(i=0; i<n; i++) /*和已有课程数目比较*/
+            if(items[i].num==s3)/*比较字符串是否相等*/
+            {
+                number=i;
+                printf("------------------\n");
+                printf("1.修改课程编号\n");
+                printf("2.修改课程名称\n");
+                printf("3.修改所属专业\n");
+                printf("4.修改课程性质\n");
+                printf("5.修改课程学时\n");
+                printf("6.修改课程学分\n");
+                printf("7.返回主菜单\n");
+                printf("------------------\n");
+                while(c)//C控制现更改编号造成的程序错误（只能更改一个课程）
+                {
+                    printf("请选择子菜单编号:");
+                    scanf("%d",&item);
+                    switch(item)/*开始选择*/
+                    {
+                        case 1:
+                            printf("请输入新的编号:\n");
+                            scanf("%d",&s1);
+                            items[number].num=s1;
+                            for(j=number+1; j<n; j++)//第一次循环已经检测到i所以第二次应该从i+1开始检测
+                            {
+                                if(items[j].num==s3)
+                                {
+                                    items[j].num=s1;//赋值
+                                }
+                            }
+                            printf("录入成功\n");
+                            c=0;
+                            system("pause");/*按任意键继续*/
+                            system("cls");
+                            break;
+                        case 2:
+                            printf("请输入新的名称:\n");
+                            scanf("%s",&s2);
+                            strcpy(items[number].name,s2);
+                            for(j=number+1; j<n; j++)
+                            {
+                                if(items[j].num==s3)
+                                {
+                                    strcpy(items[j].name,s2);
+                                }
+                            }
+                            printf("录入成功\n");
+                            break;
+                        case 3:
+                            printf("请输入新的所属专业:\n");
+                            scanf("%s",&s2);
+                            strcpy(items[number].pro,s2);
+                            for(j=number+1; j<n; j++)
+                            {
+                                if(items[j].num==s3)
+                                {
+                                    strcpy(items[j].pro,s2);
+                                }
+                            }
+                            printf("录入成功\n");
+                            break;
+                        case 4:
+                            printf("请输入新的课程性质:\n");
+                            scanf("%s",&s2);
+                            strcpy(items[number].property,s2);
+                            for(j=number+1; j<n; j++)
+                            {
+                                if(items[j].num==s3)
+                                {
+                                    strcpy(items[j].property,s2);
+                                }
+                            }
+                            printf("录入成功\n");
+                            break;
+                        case 5:
+                            printf("请输入新的课程学时:\n");
+                            scanf("%d",&s1);
+                            items[number].time=s1;
+                            for(j=number+1; j<n; j++)
+                            {
+                                if(items[j].num==s3)
+                                {
+                                    items[j].time=s1;
+                                }
+                            }
+                            printf("录入成功\n");
+                            break;
+                        case 6:
+                            printf("请输入新的课程学分:\n");
+                            scanf("%d",&s1);
+                            items[number].score=s1;
+                            for(j=number+1; j<n; j++)
+                            {
+                                if(items[j].num==s3)
+                                {
+                                    items[j].score=s1;
+                                }
+                            }
+                            printf("录入成功\n");
+                            break;
+                        case 7:
+                            system("pause");/*按任意键继续*/
+                            system("cls");
+                            return;
+                        default:
+                            printf("请在1-7之间选择\n");
+                    }
+                }
+                return;//返回主菜单否则打印printf("请确认输入的课程编号是否正确\n");
+            }
+            else
+            {
+                printf("请确认输入的课程编号是否正确\n");
+                system("pause");/*按任意键继续*/
+                system("cls");
+            }
+    }
+    else
+    {
+        printf("请先添加课程\n");/*还未有课程存在*/
+        system("pause");/*按任意键继续*/
+        system("cls");
+    }
+}
+void insert() /*添加课程*/
+{
+    system("cls");
+    int j,a;
+    printf("请输入待增加的课程数:\n");
+    scanf("%d",&m);
+    printf("请确认您要添加的课程为%d门\n",m);
+    printf("确认请键入\"1\"输入错误键入\"2\"返回主菜单\n");
+    scanf("%d",&a);
+    if(a==1)
+    {
+        for(j=in; j<m+in; j++)//防止第二次加课
+        {
+            printf("请输入第 %d 个课程的编号:\n",j+1);
+            scanf("%d",&items[j].num);
+            printf("请输入第 %d 个课程的名称:\n",j+1);
+            scanf("%s",items[j].name);
+            printf("请输入第 %d 个课程的所属专业:\n",j+1);
+            scanf("%s",items[j].pro);
+            printf("请输入第 %d 个课程的性质 \n",j+1);
+            scanf("%s",items[j].property);
+            printf("请输入第 %d 个课程的学时 \n",j+1);
+            scanf("%d",&items[j].time);
+            printf("请输入第 %d 个课程学分 \n",j+1);
+            scanf("%d",&items[j].score);
+            printf("第%d个课程录入完毕\n",j+1);
+        }
+        in+=m;/*in提供给显示函数的循环打印条件   第二次加课*/
+        n+=m;/*第二次加课*/
+        system("pause");/*按任意键继续*/
+        system("cls");
+    }
+    else
+    {
+        system("pause");/*按任意键继续*/
+        system("cls");
+    }
+}
+void del()/*删除课程*/
+{
+    system("cls");
+    int i,flag=0,j=0;
+    int s1;
+    printf("请输入要删除课程的编号:\n");
+    scanf("%d",&s1);
+    for(i=100; i>=0; i--) /*因为每次删除后数组向上覆盖所以采取i自减方式这样就可以查询所有在数组中的元素了,,,和n冲突*/
+    {
+        if(items[i].num==s1)
+        {
+            flag=1;
+            items[i]=items[N];/*赋值为0*/
+            for(j=i; j<n; j++)/*覆盖被删除的数组*/
+            {
+                items[j].num=items[j+1].num;
+                strcpy(items[j].name,items[j+1].name);
+                strcpy(items[j].pro,items[j+1].pro);
+                strcpy(items[j].property,items[j+1].property);
+                items[j].time=items[j+1].time;
+                items[j].score=items[j+1].score;
+            }
+            n--;
+            in--;
+        }
+    }
+    if(flag==0)
+    {
+        printf("该编号不存在！\n");
+        system("pause");/*按任意键继续*/
+        system("cls");
+    }
+    if(flag==1)
+    {
+        printf("删除成功,显示结果请选择菜单6\n");
+        system("pause");/*按任意键继续*/
+        system("cls");
+    }
+}
+void display()/*显示课程默认按编号排序*/
+{
+    system("cls");
+    int i,j,s1;
+    char s2[50];
+    for(i=0; i<n-1; i++)
+    {
+        for(j=n-1; j>i; j--)
+            if(items[j-1].num>items[j].num)
+            {
+                s1=items[j-1].num;/*交换课程编号*/
+                items[j-1].num=items[j].num;
+                items[j].num=s1;
+                strcpy(s2,items[j-1].name);/*交换课程名称*/
+                strcpy(items[j-1].name,items[j].name);
+                strcpy(items[j].name,s2);
+                strcpy(s2,items[j-1].pro);/*交换所属专业*/
+                strcpy(items[j-1].pro,items[j].pro);
+                strcpy(items[j].pro,s2);
+                strcpy(s2,items[j-1].property);/*交换课程性质*/
+                strcpy(items[j-1].property,items[j].property);
+                strcpy(items[j].property,s2);
+                s1=items[j-1].time;/*交换课程学时*/
+                items[j-1].time=items[j].time;
+                items[j].time=s1;
+                s1=items[j-1].score;/*交换课程学分*/
+                items[j-1].score=items[j].score;
+                items[j].score=s1;
+            }
+    }
+    printf("所有课程的信息为:\n");
+    printf("课程编号      课程名称      所属专业      课程性质      课程学时     课程学分\n");
+    printf("--------------------------------------------------------------------------------\n");
+    for(i=0; i<in; i++) /*循环打印*/
+    {
+        printf("%-14d%-14s%-14s%-14s%-14d%-14d\n", items[i].num,items[i].name,items[i].pro,items[i].property,items[i].time,items[i].score);
+    }
+    printf("--------------------------------------------------------------------------------\n");
+    system("pause");/*按任意键继续*/
+    system("cls");
+}
+void menu()/* 初始界面 */
+{
+    int num;
+    printf("*********************系统功能菜单************************       \n");
+    printf("     ----------------------   ----------------------   \n");
+    printf("     *********************************************     \n");
+    printf("     *   0.系统帮助       * *  1.排序课程        *     \n");
+    printf("     *********************************************     \n");
+    printf("     *   2.查询课程       * *  3.修改课程        *     \n");
+    printf("     *********************************************     \n");
+    printf("     *   4.增加课程       * *  5.删除课程        *     \n");
+    printf("     *********************************************     \n");
+    printf("     *   6.显示课程       * *  7.退出系统        *     \n");
+    printf("     ********************** **********************     \n");;
+    printf("     ----------------------   ----------------------   \n");
+    printf("请选择菜单编号:");
+    scanf("%d",&num);
+    switch(num)
+    {
+        case 0:
+            help();
+            break;
+        case 1:
+            sort();
+            break;
+        case 2:
+            seek();
+            break;
+        case 3:
+            modify();
+            break;
+        case 4:
+            insert();
+            break;
+        case 5:
+            del();
+            break;
+        case 6:
+            display();
+            break;
+        case 7:
+            system("cls");
+            k=0;
+            printf("谢谢使用\n");
+            break;
+        default:
+            printf("请在0-8之间选择\n");
+    }
+}
